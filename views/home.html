@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleShop</title>
+
+    <style>
+        :root {
+            --color-primary: #2563eb;
+            --color-primary-foreground: #ffffff;
+            --color-secondary: #f3f4f6;
+            --color-secondary-foreground: #1f2937;
+            --color-muted: #6b7280;
+            --color-card: #ffffff;
+            --color-card-foreground: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: var(--color-secondary-foreground);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-primary-foreground);
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: var(--color-primary-foreground);
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .hero {
+            background-color: var(--color-secondary);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: var(--color-primary-foreground);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .featured-products {
+            padding: 4rem 0;
+        }
+
+        .featured-products h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .product-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .product-card {
+            background-color: var(--color-card);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-info p {
+            color: var(--color-muted);
+            margin-bottom: 1rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .newsletter {
+            background-color: var(--color-secondary);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex-grow: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--color-muted);
+            border-radius: 0.25rem 0 0 0.25rem;
+        }
+
+        .newsletter-form button {
+            padding: 0.5rem 1rem;
+            background-color: var(--color-primary);
+            color: var(--color-primary-foreground);
+            border: none;
+            border-radius: 0 0.25rem 0.25rem 0;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: var(--color-primary);
+            color: var(--color-primary-foreground);
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        @media (min-width: 768px) {
+            nav {
+                display: block;
+            }
+
+            .menu-icon {
+                display: none;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        
+        /* COD MODAL */
+        
+        .modal {
+            position: fixed;
+            padding: 0;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background-color: rgba(0, 0, 0, 0.5);
+            transform: scale(1.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: visibility 0.25s ease-in-out transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
+        }
+
+        .modal-content {
+            background-color: white;
+            color: black;
+            padding: 16px 24px;
+            width: 450px;
+            border-radius: 0.5rem;
+        }
+
+        #spanModal {
+            float: right;
+            width: 24px;
+            cursor: pointer;
+            background-color: lightgray;
+            text-align: center;
+            line-height: 24px;
+            border-radius: 5px;
+        }
+
+        #modalspan:hover {
+            background-color: darkgray;
+        }
+
+        .show-modal {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1.0);
+        }
+
+        .tituloCarrinho {
+            border-bottom: 2px solid black;
+        }
+
+        .conteudoCarrinho {
+            border-bottom: 1px solid gray;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        body, ul {
+            margin: 0px;
+            padding: 0px;
+            font-family: sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            font-family: sans-serif;
+        }
+
+        a:hover {
+            background-color: #1d52c4;
+            border-radius: 5px;
+        }
+
+        #logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #header {
+            box-sizing: border-box;
+            height: 70px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--color-primary);
+            border-bottom: 2px solid black;
+        }
+
+        #nav {
+            display: flex;
+        }
+
+        #btnCarrinho {
+            margin-left: 40px;
+
+            cursor: pointer;
+            background-color: transparent;
+            border-style: none;
+        }
+
+        #menu {
+            display: flex;
+            list-style: none;
+            gap: .5rem;
+        }
+
+        #menu a {
+            display: block;
+            padding: .5rem;
+            font-weight: 600;
+        }
+
+        #btn-mobile {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+    
+        #menu {
+            /*display: none;*/
+            display: block;
+            position: absolute;
+            width: 100%;
+            top: 70px;
+            right: 0px;
+            background-color: #6d6d6d;
+            height: 0px;
+            transition: .6s;
+            z-index: 1000;
+            visibility: hidden;
+            overflow-y: hidden ;
+        }
+
+        #nav.active #menu {
+            height: calc(100vh - 70px);
+            visibility: visible;
+            overflow-y: auto;
+        }
+
+        #menu a {
+            padding: 1rem 0;
+            margin: 0 1rem;
+            border-bottom: 2px solid rgb(71, 71, 71);
+        }
+
+        #btn-mobile {
+            display: flex;
+            padding: .5rem 1rem;
+            font-size: 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            gap: .5rem;
+        }
+
+        #hamburguer {
+            display: block;
+            border-top: 2px solid;
+            width: 20px;
+            color: white;
+        }
+
+        #hamburguer::after, #hamburguer::before {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 2px;
+            background-color: white;
+            margin-top: 5px;
+            transition: .3s;
+            position: relative;
+        }
+
+        #nav.active #hamburguer {
+            border-top-color: transparent;
+        }
+
+        #nav.active #hamburguer::before {
+            transform: rotate(135deg);
+        }
+
+        #nav.active #hamburguer::after {
+            transform: rotate(-135deg);
+            top: -7px;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <header id="header">
+        <div class="container header-content">
+            <div class="logo"><a href="/">TesteShop</a></div>
+
+            <nav id="nav">
+                <ul id="menu" role="menu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/produtos.html">Produtos</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Cadastre-se</a></li>
+                </ul>
+
+                <button aria-label="Abrir Menu" id="btn-mobile" aria-haspopup="true" aria-controls="menu" aria-expanded="false">
+                    <span id="hamburguer"></span>
+                </button>
+            </nav>
+
+            <div><h3>Olá, ${nome}.</h3></div>
+
+            <div class="header-icons">
+
+                <button onclick="showModal()" id="btnCarrinho"><img src="car.png" alt="carrinho" width="35px" height="35px"></button>
+
+                <div class="modal" id="modal">
+                    <div class="modal-content">
+                        <span id="spanModal" onclick="hideModal()">&times;</span>
+                        <div class="tituloCarrinho">
+                            <h1>Logo | Carrinho</h1>
+                        </div>
+    
+                        <div class="conteudoCarrinho">
+                            <h2>Descrição</h2>
+                            <h2>|</h2>
+                            <h2>Quantidade</h2>
+                            <h2>|</h2>
+                            <h2>Valor</h2>
+                        </div>
+    
+                        <div class="conteudoCarrinho">
+                            <h3>Item 1</h3>
+                            <h3>1</h3>
+                            <h3>R$0,00</h3>
+                        </div>
+    
+                        <div class="conteudoCarrinho">
+                            <h3>Item 2</h3>
+                            <h3>1</h3>
+                            <h3>R$0,00</h3>
+                        </div>
+    
+                        <div class="conteudoCarrinho">
+                            <h3>Item 3</h3>
+                            <h3>1</h3>
+                            <h3>R$0,00</h3>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>TesteShopping</h1>
+                <p>Tudo o que você procura.</p>
+                <a href="produtos.html" class="button">Comprar Agora</a>
+            </div>
+        </section>
+
+        <section class="featured-products">
+            <div class="container">
+                <h2>Nossos Produtos</h2>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <img src="/img/manutention.png" alt="Produto 1">
+                        <div class="product-info">
+                            <h3>Produto 1</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <div class="product-footer">
+                                <span class="price">R$9,99</span>
+                                <a href="#" class="button">Adicionar ao Carrinho</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <img src="/img/manutention.png" alt="Produto 2">
+                        <div class="product-info">
+                            <h3>Produto 2</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <div class="product-footer">
+                                <span class="price">R$19,99</span>
+                                <a href="#" class="button">Adicionar ao Carrinho</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <img src="/img/manutention.png" alt="Produto 3">
+                        <div class="product-info">
+                            <h3>Produto 3</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <div class="product-footer">
+                                <span class="price">R$29,99</span>
+                                <a href="#" class="button">Adicionar ao Carrinho</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="newsletter">
+            <div class="container">
+                <h2>Inscreva-se para receber nossas Ofertas e Novidades</h2>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Insira o seu email" required>
+                    <button type="submit">Inscrever-se</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TesteShop. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showModal() {
+            const element = document.getElementById("modal");
+            element.classList.add("show-modal");
+        }
+
+        function hideModal() {
+            const element = document.getElementById("modal");
+            element.classList.remove("show-modal");
+        }
+
+        const btnMobile = document.getElementById('btn-mobile');
+
+        function toggleMenu(event) {
+            if (event.type === 'touchstart') event.preventDefault();
+            const nav = document.getElementById('nav');
+            nav.classList.toggle('active');
+            const active = nav.classList.contains('active');
+            event.currentTarget.setAttribute('aria-expanded', active);
+
+            if (active) {
+                event.currentTarget.setAttribute('aria-label', 'Fechar Menu');
+            } else {
+                event.currentTarget.setAttribute('aria-label', 'Abrir Menu');
+            }
+        }
+
+        btnMobile.addEventListener('click', toggleMenu);
+        btnMobile.addEventListener('touchstart', toggleMenu);
+    </script>
+</body>
+</html>
